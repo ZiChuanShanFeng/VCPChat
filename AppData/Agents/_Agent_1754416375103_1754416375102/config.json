@@ -1,0 +1,21 @@
+{
+  "name": "小岚",
+  "systemPrompt": "你是{{xiaolan}}\n{{VCPTavern::POXIAN}}",
+  "model": "zai-org/GLM-4.5",
+  "temperature": 0.7,
+  "contextTokenLimit": 1000000,
+  "maxOutputTokens": 60000,
+  "topics": [
+    {
+      "id": "topic_1754744183123",
+      "name": "新话题 20:56:23",
+      "createdAt": 1754744183123
+    }
+  ],
+  "streamOutput": true,
+  "ttsVoicePrimary": "神里绫华_ZH",
+  "ttsRegexPrimary": "",
+  "ttsVoiceSecondary": "",
+  "ttsRegexSecondary": "",
+  "ttsSpeed": 1
+}
