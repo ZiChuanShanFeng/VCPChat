@@ -1,0 +1,53 @@
+{
+  "manifestVersion": "1.0.0",
+  "name": "SDForgeGen",
+  "version": "1.0.0",
+  "displayName": "SD Forge 绘图插件",
+  "description": "通过调用本地 Stable Diffusion Forge API 来生成图片。",
+  "author": "VCP",
+  "pluginType": "synchronous",
+  "entryPoint": {
+    "type": "nodejs",
+    "command": "node SDForgeGen.js"
+  },
+  "communication": {
+    "protocol": "stdio",
+    "timeout": 180000
+  },
+  "configSchema": {
+    "SD_FORGE_API_URL": {
+      "type": "string",
+      "description": "Stable Diffusion Forge API 的地址，用于 txt2img。",
+      "default": "http://127.0.0.1:7860/sdapi/v1/txt2img"
+    },
+    "SD_FORGE_USERNAME": {
+      "type": "string",
+      "description": "API 的认证用户名。",
+      "default": ""
+    },
+    "SD_FORGE_PASSWORD": {
+      "type": "string",
+      "description": "API 的认证密码。",
+      "default": ""
+    }
+  },
+  "capabilities": {
+    "invocationCommands": [
+      {
+        "commandIdentifier": "GenerateImage",
+        "description": "调用本地 Stable Diffusion Forge API 进行绘图。\n参数:\n- prompt (字符串, 必需): 详细描述你想要生成的图片内容，即正向提示词。\n- negative_prompt (字符串, 可选): 描述你不希望在图片中看到的内容，即负向提示词。\n- width (数字, 可选, 默认 1024): 生成图片的宽度。\n- height (数字, 可选, 默认 1024): 生成图片的高度。\n- steps (数字, 可选, 默认 20): 迭代步数。\n- sampler_name (字符串, 可选): 采样器名称 (例如: DPM++ 2M Karras)。\n- cfg_scale (数字, 可选, 默认 7): 提示词相关性强度。\n调用格式:\n<<<[TOOL_REQUEST]>>>\ntool_name:「始」SDForgeGen「末」,\nprompt:「始」一个宇航员在月球上骑马「末」,\nnegative_prompt:「始」模糊, 低质量「末」\n<<<[END_TOOL_REQUEST]>>>",
+        "example": "<<<[TOOL_REQUEST]>>>\ntool_name:「始」SDForgeGen「末」,\nprompt:「始」一只可爱的猫咪，戴着一顶小帽子，工作室灯光，高质量「末」,\nwidth:「始」512「末」,\nheight:「始」512「末」\n<<<[END_TOOL_REQUEST]>>>"
+      },
+      {
+        "commandIdentifier": "SwitchModel",
+        "description": "切换 Stable Diffusion 模型。\n参数:\n- model (字符串, 必需): 要切换到的模型名称或标题。可以先用info功能查看可用模型列表。\n调用格式:\n<<<[TOOL_REQUEST]>>>\ntool_name:「始」SDForgeGen「末」,\nmodel:「始」模型名称「末」\n<<<[END_TOOL_REQUEST]>>>",
+        "example": "<<<[TOOL_REQUEST]>>>\ntool_name:「始」SDForgeGen「末」,\nmodel:「始」sd_xl_base_1.0.safetensors「末」\n<<<[END_TOOL_REQUEST]>>>"
+      },
+      {
+        "commandIdentifier": "GetInfo", 
+        "description": "查询 SD Forge 服务器信息，包括模型、采样器、调度器、LoRA等。\n参数:\n- info (字符串, 必需): 查询类型。可选值：\n  * 'models' 或 '模型' - 查看可用模型列表\n  * 'samplers' 或 '采样器' - 查看可用采样器列表\n  * 'schedulers' 或 '调度器' - 查看可用调度器列表\n  * 'loras' 或 'LoRA' - 查看可用LoRA列表\n  * 'all' 或 '信息' - 查看所有信息概览\n调用格式:\n<<<[TOOL_REQUEST]>>>\ntool_name:「始」SDForgeGen「末」,\ninfo:「始」models「末」\n<<<[END_TOOL_REQUEST]>>>",
+        "example": "<<<[TOOL_REQUEST]>>>\ntool_name:「始」SDForgeGen「末」,\ninfo:「始」loras「末」\n<<<[END_TOOL_REQUEST]>>>"
+      }
+    ]
+  }
+}
