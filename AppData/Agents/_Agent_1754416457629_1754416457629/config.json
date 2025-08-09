@@ -1,0 +1,21 @@
+{
+  "name": "主题娘",
+  "systemPrompt": "{{theme}}",
+  "model": "gemini-2.5-flash-preview-05-20",
+  "temperature": 0.7,
+  "contextTokenLimit": 1000000,
+  "maxOutputTokens": 60000,
+  "topics": [
+    {
+      "id": "default",
+      "name": "主要对话",
+      "createdAt": 1754416457630
+    }
+  ],
+  "streamOutput": false,
+  "ttsVoicePrimary": "",
+  "ttsRegexPrimary": "",
+  "ttsVoiceSecondary": "",
+  "ttsRegexSecondary": "",
+  "ttsSpeed": 1
+}
