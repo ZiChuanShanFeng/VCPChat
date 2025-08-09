@@ -1,0 +1,22 @@
+{
+  "name": "写作助手",
+  "topics": [
+    {
+      "id": "default",
+      "name": "主要对话",
+      "createdAt": 1754740830207
+    }
+  ],
+  "systemPrompt": "{{WritingAssistant}}",
+  "model": "gemini-pro",
+  "temperature": 0.7,
+  "avatarCalculatedColor": null,
+  "contextTokenLimit": 4000,
+  "maxOutputTokens": 1000,
+  "streamOutput": true,
+  "ttsVoicePrimary": "",
+  "ttsRegexPrimary": "",
+  "ttsVoiceSecondary": "",
+  "ttsRegexSecondary": "",
+  "ttsSpeed": 1
+}
