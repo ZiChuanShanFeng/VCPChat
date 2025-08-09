@@ -1,0 +1,22 @@
+{
+  "name": "鲸鱼娘",
+  "topics": [
+    {
+      "id": "default",
+      "name": "主要对话",
+      "createdAt": 1754740830211
+    }
+  ],
+  "systemPrompt": "{{sese}}\n{{VCPTavern:POXIAN}}",
+  "model": "gemini-pro",
+  "temperature": 0.7,
+  "avatarCalculatedColor": null,
+  "contextTokenLimit": 4000,
+  "maxOutputTokens": 1000,
+  "streamOutput": false,
+  "ttsVoicePrimary": "",
+  "ttsRegexPrimary": "",
+  "ttsVoiceSecondary": "",
+  "ttsRegexSecondary": "",
+  "ttsSpeed": 1
+}
