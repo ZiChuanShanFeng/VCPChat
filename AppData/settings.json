@@ -1,0 +1,49 @@
+{
+  "sidebarWidth": 257,
+  "notificationsSidebarWidth": 292,
+  "userName": "岚",
+  "vcpServerUrl": "https://vcp.zich-uanl-an.top/v1/chat/completions",
+  "vcpApiKey": "1234qwerasdf",
+  "vcpLogUrl": "wss://vcp.zich-uanl-an.top",
+  "vcpLogKey": "1234qwerasdf",
+  "networkNotesPaths": [],
+  "enableAgentBubbleTheme": true,
+  "enableSmoothStreaming": true,
+  "minChunkBufferSize": 1,
+  "smoothStreamIntervalMs": 25,
+  "assistantAgent": "_Agent_1754416375103_1754416375102",
+  "enableDistributedServer": true,
+  "agentMusicControl": true,
+  "enableVcpToolInjection": true,
+  "combinedItemOrder": [
+    {
+      "id": "_Agent_1754416375103_1754416375102",
+      "type": "agent"
+    },
+    {
+      "id": "_Agent_1754417040287_1754417040287",
+      "type": "agent"
+    },
+    {
+      "id": "_Agent_1754416436749_1754416436749",
+      "type": "agent"
+    },
+    {
+      "id": "_Agent_1754566543371_1754566543371",
+      "type": "agent"
+    },
+    {
+      "id": "_Agent_1754416457629_1754416457629",
+      "type": "agent"
+    },
+    {
+      "id": "_Agent_1754505497333_1754505497333",
+      "type": "agent"
+    },
+    {
+      "id": "_Agent_1754416407521_1754416407520",
+      "type": "agent"
+    }
+  ],
+  "assistantEnabled": true
+}
