@@ -3,3 +3,4 @@ gitignore
 # 不忽略 .gitignore 文件本身（这是Git的常见实践）
 !.gitignore
 
+/node_modules
