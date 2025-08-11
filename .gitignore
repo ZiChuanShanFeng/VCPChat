@@ -169,3 +169,5 @@ image/通用表情包/*
 # 忽略 FluxGen 生成的图片
 image/fluxgen/
 /.claude
+config.json
+/AppData/Agents
