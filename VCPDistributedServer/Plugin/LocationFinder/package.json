@@ -1,0 +1,29 @@
+{
+  "name": "locationfinder",
+  "version": "3.0.0",
+  "description": "智能多源地理位置定位系统，整合IP定位、地图服务API、WiFi定位等多种技术，提供高精度位置信息。",
+  "main": "LocationFinder.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node LocationFinder.js"
+  },
+  "keywords": [
+    "location",
+    "geolocation",
+    "amap",
+    "google-maps",
+    "baidu-maps",
+    "ip",
+    "wifi",
+    "gps",
+    "multi-source",
+    "fusion",
+    "caching",
+    "performance"
+  ],
+  "author": "VCP Utility",
+  "license": "ISC",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
