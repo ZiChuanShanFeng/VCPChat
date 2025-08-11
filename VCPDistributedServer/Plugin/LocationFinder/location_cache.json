@@ -1,0 +1,26 @@
+{
+  "location_optimal": {
+    "data": {
+      "latitude": 30.239899035,
+      "longitude": 120.21885035,
+      "city": "杭州市",
+      "province": "浙江省",
+      "country": "中国",
+      "adcode": "330100",
+      "rectangle": "119.8824799,29.95931271;120.5552208,30.52048536",
+      "location_type": "ip",
+      "source": "amap_ip_api",
+      "_metadata": {
+        "source_api": "AMap IP API",
+        "timestamp": "2025-08-11T16:30:23.946Z",
+        "confidence": "medium",
+        "confidence_score": 0.8,
+        "accuracy_notes": [
+          "基于高德地图IP定位",
+          "精度: 城市级"
+        ]
+      }
+    },
+    "timestamp": 1754929823947
+  }
+}
