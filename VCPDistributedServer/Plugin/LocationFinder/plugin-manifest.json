@@ -1,0 +1,83 @@
+{
+  "name": "LocationFinder",
+  "displayName": "多源地理位置定位器",
+  "version": "3.0.0",
+  "description": "智能多源地理位置定位系统，整合IP定位、地图服务API、WiFi定位等多种技术，提供高精度位置信息。",
+  "author": "VCP Utility",
+  "pluginType": "synchronous",
+  "entryPoint": {
+    "command": "node LocationFinder.js",
+    "timeout": 30000
+  },
+  "communication": {
+    "protocol": "stdio"
+  },
+  "configSchema": {
+    "API_ENDPOINT": {
+      "type": "string",
+      "description": "主要IP地理定位API端点。默认使用 ipapi.co。",
+      "default": "https://ipapi.co/json/"
+    },
+    "API_TIMEOUT": {
+      "type": "integer",
+      "description": "API请求的超时时间（毫秒）。",
+      "default": 15000
+    },
+    "ENABLE_MULTI_SOURCE": {
+      "type": "boolean",
+      "description": "是否启用多源数据融合。推荐启用以获得最佳精度。",
+      "default": false
+    },
+    "MIN_CONFIDENCE_THRESHOLD": {
+      "type": "number",
+      "description": "最小置信度阈值（0-1）。当某个API的置信度达到此值时，提前返回结果。",
+      "default": 0.6
+    },
+    "MAX_API_CALLS": {
+      "type": "integer",
+      "description": "多源模式下最多调用的API数量。",
+      "default": 3
+    },
+    "ENABLE_CACHE": {
+      "type": "boolean",
+      "description": "是否启用智能缓存系统。",
+      "default": true
+    },
+    "CACHE_TTL": {
+      "type": "integer",
+      "description": "缓存过期时间（毫秒）。",
+      "default": 3600000
+    },
+    "AMAP_API_KEY": {
+      "type": "string",
+      "description": "高德地图API密钥，支持IP、WiFi、GPS定位。",
+      "default": "e89469983d5dbc8dddc5466b4f72a6cd"
+    },
+    "GOOGLE_MAPS_API_KEY": {
+      "type": "string",
+      "description": "Google Maps Geolocation API密钥，支持WiFi、蓝牙、基站定位。"
+    },
+    "BAIDU_MAPS_API_KEY": {
+      "type": "string",
+      "description": "百度地图API密钥，国内WiFi、GPS定位服务。"
+    },
+    "IPINFO_TOKEN": {
+      "type": "string",
+      "description": "IPinfo.io API访问令牌。"
+    },
+    "ENABLE_PERFORMANCE_MONITORING": {
+      "type": "boolean",
+      "description": "是否启用性能监控。",
+      "default": true
+    }
+  },
+  "capabilities": {
+    "invocationCommands": [
+      {
+        "command": "getCurrentLocation",
+        "description": "获取设备的高精度地理位置信息。\n\n**🚀 核心功能:**\n- 🎯 **多源融合定位**: 整合IP、WiFi、GPS、基站等多种定位技术\n- 🗺️ **地图服务优先**: 支持高德地图、Google Maps、百度地图API\n- 🧠 **智能API选择**: 基于置信度和性能动态选择最优API\n- 📊 **精度评估系统**: 提供数值化的置信度和精度评估\n- 🔄 **智能缓存**: 本地缓存减少重复请求，提高响应速度\n- 📈 **性能监控**: 实时监控API性能和成功率\n- 🛡️ **故障转移**: 多层备选API确保服务稳定性\n\n**🏗️ 技术架构:**\n1. **优先级1**: 地图服务API（高德/Google/百度）\n2. **优先级2**: 多源IP定位API融合\n3. **优先级3**: 单一IP定位API\n4. **缓存系统**: 智能缓存和过期管理\n5. **性能监控**: API性能统计和优化建议\n\n**📏 定位精度:**\n- 地图服务API: 10-100米精度\n- IP定位: 城市级精度\n- 多源融合: 显著提高准确性\n- 响应时间: 通常1-5秒\n\n**🎛️ 参数说明:**\n1. `tool_name`:「始」LocationFinder「末」 (必需)\n2. `command`:「始」getCurrentLocation「末」 (必需)\n\n**✅ 成功返回示例:**\n多源融合定位成功示例：\n```json\n{\n  \"status\": \"success\",\n  \"result\": {\n    \"latitude\": 30.274085,\n    \"longitude\": 120.15507,\n    \"city\": \"杭州市\",\n    \"province\": \"浙江省\",\n    \"country\": \"中国\",\n    \"location_type\": \"multi_source_fusion\",\n    \"source\": \"multi_source_fusion\",\n    \"_metadata\": {\n      \"source_api\": \"Multi-source (3 APIs)\",\n      \"timestamp\": \"2025-08-10T17:33:00.251Z\",\n      \"confidence\": \"high\",\n      \"confidence_score\": 0.85,\n      \"accuracy_notes\": [\n        \"基于3个数据源融合\",\n        \"源API: amap_ip, ipwho.is, ipinfo.io\",\n        \"融合置信度: 85.0%\"\n      ],\n      \"individual_results\": [\n        {\n          \"source\": \"amap_ip\",\n          \"confidence\": 0.8,\n          \"confidence_level\": \"medium\"\n        },\n        {\n          \"source\": \"ipwho.is\",\n          \"confidence\": 0.75,\n          \"confidence_level\": \"medium\"\n        }\n      ]\n    },\n    \"_usage_note\": \"多源地理位置定位服务。支持IP、WiFi、GPS等多种定位方式，提供高精度位置信息。\",\n    \"_performance\": {\n      \"totalRequests\": 15,\n      \"successfulRequests\": 12,\n      \"failedRequests\": 3,\n      \"successRate\": \"80.00%\",\n      \"cacheHitRate\": \"75.00%\"\n    }\n  }\n}\n```\n\n**⚙️ 主要配置选项:**\n- `ENABLE_MULTI_SOURCE`: 启用多源数据融合（强烈推荐）\n- `MIN_CONFIDENCE_THRESHOLD`: 置信度阈值设置\n- `MAX_API_CALLS`: 最大API调用数量控制\n- `ENABLE_CACHE`: 智能缓存开关\n- `AMAP_API_KEY`: 高德地图API密钥\n- `GOOGLE_MAPS_API_KEY`: Google Maps API密钥\n- `BAIDU_MAPS_API_KEY`: 百度地图API密钥\n\n**🔧 特殊命令:**\n- `getMetrics`: 获取性能统计数据\n- `clearCache`: 清理缓存数据\n- `getConfig`: 获取当前配置信息\n\n**💡 使用建议:**\n- 启用多源融合模式获得最佳精度\n- 配置多个地图服务API提高可靠性\n- 根据使用场景调整置信度阈值\n- 定期检查性能数据优化API选择",
+        "example": "<<<[TOOL_REQUEST]>>>\ntool_name:「始」LocationFinder「末」,\ncommand:「始」getCurrentLocation「末」\n<<<[END_TOOL_REQUEST]>>>"
+      }
+    ]
+  }
+}
