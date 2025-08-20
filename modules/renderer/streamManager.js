@@ -4,7 +4,8 @@
 const streamingChunkQueues = new Map(); // messageId -> array of original chunk strings
 const streamingTimers = new Map();      // messageId -> intervalId
 const accumulatedStreamText = new Map(); // messageId -> string
-const streamingHistory = new Map(); // NEW: messageId -> historyArray reference
+// const streamingHistory = new Map(); // DEPRECATED: This was the source of the sync bug.
+let activeStreamingMessageId = null; // Track the currently active streaming message
 
 // --- Local Reference Store ---
 let refs = {};
@@ -34,11 +35,8 @@ function messageIsFinalized(messageId) {
 
 function processAndRenderSmoothChunk(messageId) {
     const { chatMessagesDiv, markedInstance, uiHelper } = refs;
-    const historyForThisMessage = streamingHistory.get(messageId);
-    if (!historyForThisMessage) {
-        // This can happen if a timer fires after a stream is force-closed.
-        return;
-    }
+    // ALWAYS get the LATEST history. This is the core fix.
+    const historyForThisMessage = refs.currentChatHistoryRef.get();
     
     const messageItem = chatMessagesDiv.querySelector(`.message-item[data-message-id="${messageId}"]`);
     // If the message item doesn't exist in the DOM (because it's for a non-visible chat),
@@ -103,11 +101,8 @@ function processAndRenderSmoothChunk(messageId) {
 
 function renderChunkDirectlyToDOM(messageId, textToAppend, context) {
     const { chatMessagesDiv, markedInstance, uiHelper } = refs;
-    const historyForThisMessage = streamingHistory.get(messageId);
-    if (!historyForThisMessage) {
-        console.error(`[StreamManager] Direct render: No history cached for message ${messageId}`);
-        return;
-    }
+    // ALWAYS get the LATEST history. This is the core fix.
+    const historyForThisMessage = refs.currentChatHistoryRef.get();
 
     const messageItem = chatMessagesDiv.querySelector(`.message-item[data-message-id="${messageId}"]`);
     // if (!messageItem) return; // Don't return, allow history to be updated.
@@ -156,16 +151,21 @@ function renderChunkDirectlyToDOM(messageId, textToAppend, context) {
     }
 }
 
-export function startStreamingMessage(message) {
+export function startStreamingMessage(message, passedMessageItem = null) {
+    activeStreamingMessageId = message.id; // Set the active streaming ID
     const { chatMessagesDiv, uiHelper } = refs;
     if (!message || !message.id) return null;
 
-    let messageItem = chatMessagesDiv.querySelector(`.message-item[data-message-id="${message.id}"]`);
+    let messageItem = passedMessageItem || chatMessagesDiv.querySelector(`.message-item[data-message-id="${message.id}"]`);
 
     if (!messageItem) {
+        console.warn(`[StreamManager] Could not find or receive messageItem for ${message.id}. Attempting to re-render.`);
         const placeholderMessage = { ...message, content: '', isThinking: false, timestamp: message.timestamp || Date.now(), isGroupMessage: message.isGroupMessage || false };
-        messageItem = refs.renderMessage(placeholderMessage, false); 
-        if (!messageItem) return null;
+        messageItem = refs.renderMessage(placeholderMessage, false);
+        if (!messageItem) {
+            console.error(`[StreamManager] CRITICAL: Failed to re-render message item for ${message.id}. Aborting stream start.`);
+            return null;
+        }
     }
     
     messageItem.classList.add('streaming');
@@ -180,11 +180,14 @@ export function startStreamingMessage(message) {
         accumulatedStreamText.set(message.id, '');
     }
     // When a stream starts, it's always for the current chat.
-    // So we can safely cache the current history array for this stream.
-    streamingHistory.set(message.id, currentChatHistoryArray);
+    // DEPRECATED: Caching the history was the source of the bug.
+    // streamingHistory.set(message.id, currentChatHistoryArray);
 
     if (historyIndex === -1) {
-        currentChatHistoryArray.push({ ...message, content: initialContentForHistory, isThinking: false, timestamp: message.timestamp || Date.now(), isGroupMessage: message.isGroupMessage || false });
+        // Ensure we are pushing to the most current history array
+        const latestHistory = refs.currentChatHistoryRef.get();
+        latestHistory.push({ ...message, content: initialContentForHistory, isThinking: false, timestamp: message.timestamp || Date.now(), isGroupMessage: message.isGroupMessage || false });
+        refs.currentChatHistoryRef.set(latestHistory);
     } else {
         currentChatHistoryArray[historyIndex].isThinking = false;
         currentChatHistoryArray[historyIndex].content = initialContentForHistory;
@@ -272,19 +275,15 @@ export async function finalizeStreamedMessage(messageId, finishReason, context) 
         clearInterval(streamingTimers.get(messageId));
         streamingTimers.delete(messageId);
     }
+    if (activeStreamingMessageId === messageId) {
+        activeStreamingMessageId = null; // Clear the active ID when stream finishes
+    }
 
     const { chatMessagesDiv, electronAPI, uiHelper, markedInstance } = refs;
     const currentSelectedItem = refs.currentSelectedItemRef.get();
     const currentTopicIdVal = refs.currentTopicIdRef.get();
-    const historyForThisMessage = streamingHistory.get(messageId);
-
-    if (!historyForThisMessage) {
-        console.error(`[StreamManager] Finalize: Could not find a cached history for messageId: ${messageId}. The stream may have been orphaned.`);
-        // Clean up other maps just in case
-        streamingChunkQueues.delete(messageId);
-        accumulatedStreamText.delete(messageId);
-        return;
-    }
+    // ALWAYS get the LATEST history. This is the core fix.
+    const historyForThisMessage = refs.currentChatHistoryRef.get();
 
     const messageItem = chatMessagesDiv.querySelector(`.message-item[data-message-id="${messageId}"]`);
     if (!messageItem) {
@@ -382,7 +381,7 @@ export async function finalizeStreamedMessage(messageId, finishReason, context) 
     // 清理工作
     streamingChunkQueues.delete(messageId);
     accumulatedStreamText.delete(messageId);
-    streamingHistory.delete(messageId); // Clean up the history cache for this message
+    // streamingHistory.delete(messageId); // Cache removed, so no need to delete
 }
 
 // Expose to global scope for classic scripts
@@ -390,5 +389,6 @@ window.streamManager = {
     initStreamManager,
     startStreamingMessage,
     appendStreamChunk,
-    finalizeStreamedMessage
+    finalizeStreamedMessage,
+    getActiveStreamingMessageId: () => activeStreamingMessageId, // Expose a getter
 };
