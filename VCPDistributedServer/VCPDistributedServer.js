@@ -1,5 +1,4 @@
 // VCPDistributedServer.js
-// VCPDistributedServer.js
 const WebSocket = require('ws');
 const express = require('express');
 const http = require('http');
@@ -317,14 +316,17 @@ class DistributedServer {
                     if (parsedPluginResult.status === 'success') {
                         finalResult = parsedPluginResult.result;
 
-                        // Check for special actions after a successful command
-                        if (toolName === 'FileOperator' && finalResult._specialAction === 'create_canvas') {
+                        // --- Special Handling for create_canvas action ---
+                        if (finalResult && finalResult._specialAction === 'create_canvas') {
                             if (typeof this.handleCanvasControl === 'function') {
-                                // The payload is { filePath: '...' }, we extract the path.
+                                console.log(`[${this.serverName}] Detected create_canvas action. Calling main process handler.`);
+                                // Directly call the injected handler from main.js
                                 this.handleCanvasControl(finalResult.payload.filePath);
+                            } else {
+                                console.error(`[${this.serverName}] Canvas control handler is not configured for the Distributed Server.`);
                             }
-                            // The message for the AI is already in the finalResult.
                         }
+                        // --- End of special handling ---
 
                     } else {
                         // If the plugin itself reported an error, throw it to be caught below.
